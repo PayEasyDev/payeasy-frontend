@@ -10,7 +10,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 function AuthModal({ initialMode, onClose, onSuccess }) {
     const [mode, setMode] = useState(initialMode);
     const [firstName, setFirstName] = useState('');
-    const [lastname, setLastName] = useState('');
+    const [surname, setSurname] = useState('');
     const [email, setEmail] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
@@ -28,9 +28,9 @@ function AuthModal({ initialMode, onClose, onSuccess }) {
 
         try {
             if (mode === 'signup') {
-                const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/signup`, {
+                const response = await axios.post('/api/signup', {
                     first_name: firstName,
-                    lastname,
+                    surname,
                     email,
                     phone_number: phoneNumber,
                     password,
@@ -73,9 +73,9 @@ function AuthModal({ initialMode, onClose, onSuccess }) {
                             />
                             <input
                                 type="text"
-                                placeholder="LastName"
-                                value={lastname}
-                                onChange={(e) => setLastName(e.target.value)}
+                                placeholder="Surname"
+                                value={surname}
+                                onChange={(e) => setSurname(e.target.value)}
                                 required
                             />
                             <input
