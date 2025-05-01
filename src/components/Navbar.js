@@ -5,11 +5,17 @@ function Navbar({ onLoginClick, onSignupClick }) {
                 <h2>PayEasy</h2>
             </div>
             <div className="navbar-links">
+                <span className="nav-link" onClick={() => alert('Feature coming soon')}>
+                    How It Works
+                </span>
+                <span className="nav-link" onClick={() => alert('Feature coming soon')}>
+                    Safety Education
+                </span>
+                <span className="nav-link" onClick={() => alert('Feature coming soon')}>
+                    FAQ
+                </span>
                 <span className="nav-link" onClick={onLoginClick}>
                     Login
-                </span>
-                <span className="nav-link" onClick={onSignupClick}>
-                    Signup
                 </span>
             </div>
         </nav>

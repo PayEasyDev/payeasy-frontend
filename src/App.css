@@ -1,27 +1,37 @@
-.app {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  min-height: 100vh;
-  background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e') no-repeat center center/cover;
-  position: relative;
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  color: #fff;
+  background-color: #FFA500; /* Zelle purple */
+}
+
+.app {
+  min-height: 100vh;
+}
+
+/* Navbar Styles (Zelle-inspired) */
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 15px 30px;
-  background: rgba(0, 0, 0, 0.5);
-  color: white;
+  background: transparent;
   position: fixed;
   width: 100%;
   top: 0;
-  box-sizing: border-box;
+  z-index: 1000;
 }
 
 .navbar-logo h2 {
-  margin: 0;
   font-size: 1.5em;
+  font-weight: 600;
+  color: #fff;
 }
 
 .navbar-links {
@@ -30,46 +40,137 @@
 }
 
 .nav-link {
-  color: white;
+  color: #fff;
+  font-size: 0.9em;
+  font-weight: 500;
   cursor: pointer;
-  font-size: 1em;
+  text-transform: uppercase;
+  transition: opacity 0.3s ease;
 }
 
 .nav-link:hover {
-  text-decoration: underline;
+  opacity: 0.8;
 }
 
-.landing-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: white;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+/* Hero Section */
+.hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 100vh;
+  padding: 80px 50px 50px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.landing-container h1 {
-  font-size: 2.5em;
-  margin-bottom: 10px;
+.hero-text {
+  max-width: 50%;
 }
 
-.landing-container p {
-  font-size: 1.2em;
+.hero h1 {
+  font-size: 3em;
+  font-weight: 700;
+  line-height: 1.2;
   margin-bottom: 20px;
 }
 
-.primary-button {
-  padding: 12px 24px;
-  font-size: 1em;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+.hero-subtext {
+  font-size: 1.1em;
+  font-weight: 400;
+  line-height: 1.5;
+  margin-bottom: 30px;
+  opacity: 0.9;
 }
 
-.primary-button:hover {
-  background-color: #0056b3;
+.hero-cta {
+  padding: 12px 24px;
+  font-size: 1em;
+  font-weight: 500;
+  color: #fff;
+  background-color: #00C7B7; /* Zelle teal */
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.hero-cta:hover {
+  background-color: #00a99d;
+}
+
+.hero-image {
+  position: relative;
+  max-width: 40%;
+}
+
+.hero-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 50%;
+  object-fit: cover;
+  aspect-ratio: 1 / 1;
+  border: 5px solid #fff;
+}
+
+.image-caption {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #fff;
+  color: #000;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9em;
+  font-weight: 500;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* User Page Styles */
+.user-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 100px 20px 50px;
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.user-page h2 {
+  font-size: 2em;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.user-details {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 10px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.user-details p {
+  font-size: 1.1em;
+  margin: 10px 0;
+}
+
+.logout-button {
+  padding: 10px 20px;
+  font-size: 1em;
+  font-weight: 500;
+  color: #fff;
+  background-color: #ff3b30;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: #d32f2f;
 }
 
 /* Modal Styles */
@@ -230,4 +331,47 @@
   margin-bottom: 10px;
   text-align: center;
   font-size: 0.9em;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero {
+      flex-direction: column;
+      padding: 100px 20px 50px;
+      text-align: center;
+  }
+
+  .hero-text {
+      max-width: 100%;
+      margin-bottom: 30px;
+  }
+
+  .hero h1 {
+      font-size: 2em;
+  }
+
+  .hero-subtext {
+      font-size: 1em;
+  }
+
+  .hero-image {
+      max-width: 70%;
+  }
+
+  .image-caption {
+      font-size: 0.8em;
+      padding: 6px 12px;
+  }
+
+  .user-page {
+      padding: 80px 10px 30px;
+  }
+
+  .user-page h2 {
+      font-size: 1.5em;
+  }
+
+  .user-details p {
+      font-size: 1em;
+  }
 }

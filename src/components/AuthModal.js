@@ -1,52 +1,57 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { createClient } from '@supabase/supabase-js';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-const supabase = createClient(
-    process.env.REACT_APP_SUPABASE_URL,
-    process.env.REACT_APP_SUPABASE_KEY
-);
+const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
+const supabaseKey = process.env.REACT_APP_SUPABASE_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-function AuthModal({ initialMode, onClose }) {
-    const [mode, setMode] = useState(initialMode || 'login');
+function AuthModal({ initialMode, onClose, onSuccess }) {
+    const [mode, setMode] = useState(initialMode);
+    const [firstName, setFirstName] = useState('');
+    const [lastname, setLastName] = useState('');
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [username, setUsername] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
-    const [rememberMe, setRememberMe] = useState(false);
+    const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     useEffect(() => {
-        setMode(initialMode || 'login');
+        setMode(initialMode);
+        setError('');
     }, [initialMode]);
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         setError('');
+
         try {
             if (mode === 'signup') {
-                const { data } = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/signup`, {
+                const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/signup`, {
+                    first_name: firstName,
+                    lastname,
                     email,
-                    password,
-                    username,
                     phone_number: phoneNumber,
+                    password,
                 });
-                alert('Signup successful! Please check your email for confirmation.');
-                setMode('login');
+                if (response.status === 200) {
+                    onSuccess();
+                    navigate('/user');
+                }
             } else {
-                const { data } = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/login`, {
+                const { data, error } = await supabase.auth.signInWithPassword({
                     email,
                     password,
                 });
-                await supabase.auth.setSession({ access_token: data.token });
-                alert('Login successful!');
-                onClose();
+                if (error) throw error;
+                if (data.user) {
+                    onSuccess();
+                    navigate('/user');
+                }
             }
-            setEmail('');
-            setPassword('');
-            setUsername('');
-            setPhoneNumber('');
-        } catch (error) {
-            setError(error.response?.data?.error || 'An error occurred');
+        } catch (err) {
+            setError(err.message || 'An error occurred. Please try again.');
         }
     };
 
@@ -54,72 +59,60 @@ function AuthModal({ initialMode, onClose }) {
         <div className="modal-overlay">
             <div className="auth-modal">
                 <button className="close-button" onClick={onClose}>×</button>
-                <h2>{mode === 'login' ? 'Log In' : 'Sign Up'}</h2>
-                {error && <p className="error">{error}</p>}
-                <input
-                    type="email"
-                    placeholder="Username or email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-                {mode === 'signup' && (
-                    <>
-                        <input
-                            type="text"
-                            placeholder="Username"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                        />
-                        <input
-                            type="text"
-                            placeholder="Phone Number"
-                            value={phoneNumber}
-                            onChange={(e) => setPhoneNumber(e.target.value)}
-                        />
-                    </>
-                )}
-                {mode === 'login' && (
-                    <label className="checkbox-label">
-                        <input
-                            type="checkbox"
-                            checked={rememberMe}
-                            onChange={(e) => setRememberMe(e.target.checked)}
-                        />
-                        Remember me
-                    </label>
-                )}
-                <button className="submit-button" onClick={handleSubmit}>
-                    {mode === 'login' ? 'Log In' : 'Sign Up'}
-                </button>
+                <h2>{mode === 'signup' ? 'Sign Up' : 'Login'}</h2>
+                {error && <div className="error">{error}</div>}
+                <form onSubmit={handleSubmit}>
+                    {mode === 'signup' && (
+                        <>
+                            <input
+                                type="text"
+                                placeholder="First Name"
+                                value={firstName}
+                                onChange={(e) => setFirstName(e.target.value)}
+                                required
+                            />
+                            <input
+                                type="text"
+                                placeholder="LastName"
+                                value={lastname}
+                                onChange={(e) => setLastName(e.target.value)}
+                                required
+                            />
+                            <input
+                                type="tel"
+                                placeholder="Phone Number"
+                                value={phoneNumber}
+                                onChange={(e) => setPhoneNumber(e.target.value)}
+                                required
+                            />
+                        </>
+                    )}
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                    <button type="submit" className="submit-button">
+                        {mode === 'signup' ? 'Sign Up' : 'Login'}
+                    </button>
+                </form>
                 <div className="links">
                     <span
                         className="link"
-                        onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
+                        onClick={() => setMode(mode === 'signup' ? 'login' : 'signup')}
                     >
-                        {mode === 'login' ? 'Register now' : 'Already have an account? Log in'}
+                        {mode === 'signup' ? 'Already have an account? Login' : "Don't have an account? Sign Up"}
                     </span>
-                    {mode === 'login' && (
-                        <span className="link" onClick={() => alert('Feature coming soon')}>
-                            Forget password?
-                        </span>
-                    )}
                 </div>
-                <div className="separator">or</div>
-                <button className="social-button facebook" onClick={() => alert('Feature coming soon')}>
-                    Log in with Facebook
-                </button>
-                <button className="social-button twitter" onClick={() => alert('Feature coming soon')}>
-                    Log in with Twitter
-                </button>
-                <button className="social-button google" onClick={() => alert('Feature coming soon')}>
-                    Log in with Google
-                </button>
             </div>
         </div>
     );
